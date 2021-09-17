@@ -24,22 +24,22 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-type StorageV1beta1Interface interface {
+type KubernetesV1beta1Interface interface {
 	RESTClient() rest.Interface
 	CrdsGetter
 }
 
-// StorageV1beta1Client is used to interact with features provided by the storage.alibabacloud.com group.
-type StorageV1beta1Client struct {
+// KubernetesV1beta1Client is used to interact with features provided by the kubernetes.io group.
+type KubernetesV1beta1Client struct {
 	restClient rest.Interface
 }
 
-func (c *StorageV1beta1Client) Crds() CrdInterface {
+func (c *KubernetesV1beta1Client) Crds() CrdInterface {
 	return newCrds(c)
 }
 
-// NewForConfig creates a new StorageV1beta1Client for the given config.
-func NewForConfig(c *rest.Config) (*StorageV1beta1Client, error) {
+// NewForConfig creates a new KubernetesV1beta1Client for the given config.
+func NewForConfig(c *rest.Config) (*KubernetesV1beta1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -48,12 +48,12 @@ func NewForConfig(c *rest.Config) (*StorageV1beta1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &StorageV1beta1Client{client}, nil
+	return &KubernetesV1beta1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new StorageV1beta1Client for the given config and
+// NewForConfigOrDie creates a new KubernetesV1beta1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *StorageV1beta1Client {
+func NewForConfigOrDie(c *rest.Config) *KubernetesV1beta1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -61,9 +61,9 @@ func NewForConfigOrDie(c *rest.Config) *StorageV1beta1Client {
 	return client
 }
 
-// New creates a new StorageV1beta1Client for the given RESTClient.
-func New(c rest.Interface) *StorageV1beta1Client {
-	return &StorageV1beta1Client{c}
+// New creates a new KubernetesV1beta1Client for the given RESTClient.
+func New(c rest.Interface) *KubernetesV1beta1Client {
+	return &KubernetesV1beta1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -81,7 +81,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *StorageV1beta1Client) RESTClient() rest.Interface {
+func (c *KubernetesV1beta1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

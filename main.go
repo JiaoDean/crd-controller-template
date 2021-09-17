@@ -4,7 +4,8 @@ import (
 	"flag"
 	"github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned"
 	"github.com/JiaoDean/crd-controller/pkg/client/informers/externalversions"
-	"github.com/JiaoDean/crd-controller/pkg/controller"
+	"github.com/JiaoDean/crd-controller/pkg/controller/crd"
+	"github.com/JiaoDean/crd-controller/pkg/controller/kube"
 	"github.com/JiaoDean/crd-controller/pkg/task"
 	"github.com/JiaoDean/crd-controller/pkg/utils"
 	log "github.com/sirupsen/logrus"
@@ -69,14 +70,14 @@ func main() {
 
 	recorder := utils.NewEventRecorder()
 
-	kubeController := controller.NewKubeController(kubeClient,
+	kubeController := kube.NewKubeController(kubeClient,
 		kubeInformerFactory.Core().V1().PersistentVolumes(),
 		kubeInformerFactory.Core().V1().PersistentVolumeClaims(),
 		recorder)
 
-	crdController := controller.NewCrdController(
+	crdController := crd.NewCrdController(
 		crdClient, kubeClient,
-		crdInformerFactory.Storage().V1beta1().Crds())
+		crdInformerFactory.Kubernetes().V1beta1().Crds())
 
 	kubeInformerFactory.Start(stopCh)
 	crdInformerFactory.Start(stopCh)

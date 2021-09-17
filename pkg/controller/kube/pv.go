@@ -1,4 +1,4 @@
-package controller
+package kube
 
 import (
 	"fmt"
@@ -9,73 +9,73 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-func (c *KubeController) handlePvcAdd(obj interface{}) {
+func (c *KubeController) handlePvAdd(obj interface{}) {
 	var object metav1.Object
 	var ok bool
 	if object, ok = obj.(metav1.Object); !ok {
 		tombstone, ok := obj.(cache.DeletedFinalStateUnknown)
 		if !ok {
-			utilruntime.HandleError(fmt.Errorf("error decoding object, invalid type"))
+			utilruntime.HandleError(fmt.Errorf("Error decoding object, invalid type"))
 			return
 		}
 		object, ok = tombstone.Obj.(metav1.Object)
 		if !ok {
-			utilruntime.HandleError(fmt.Errorf("error decoding object tombstone, invalid type"))
+			utilruntime.HandleError(fmt.Errorf("Error decoding object tombstone, invalid type"))
 			return
 		}
 		log.Infof("Recovered deleted object '%s' from tombstone", object.GetName())
 	}
 
-	pvcObj := obj.(*corev1.PersistentVolumeClaim)
-	pvcIdx := c.GetPvcIdx(pvcObj)
-	c.Asow.PvcList[pvcIdx] = pvcObj
+	pvObj := obj.(*corev1.PersistentVolume)
+	pvName := GetPvName(pvObj)
+	c.SetPvMap(pvName, pvObj)
 }
 
-func (c *KubeController) handlePvcDelete(obj interface{}) {
+func (c *KubeController) handlePvDelete(obj interface{}) {
 	var object metav1.Object
 	var ok bool
 	if object, ok = obj.(metav1.Object); !ok {
 		tombstone, ok := obj.(cache.DeletedFinalStateUnknown)
 		if !ok {
-			utilruntime.HandleError(fmt.Errorf("error decoding object, invalid type"))
+			utilruntime.HandleError(fmt.Errorf("Error decoding object, invalid type"))
 			return
 		}
 		object, ok = tombstone.Obj.(metav1.Object)
 		if !ok {
-			utilruntime.HandleError(fmt.Errorf("error decoding object tombstone, invalid type"))
+			utilruntime.HandleError(fmt.Errorf("Error decoding object tombstone, invalid type"))
 			return
 		}
 		log.Infof("Recovered deleted object '%s' from tombstone", object.GetName())
 	}
 
-	pvcObj := obj.(*corev1.PersistentVolumeClaim)
-	pvcIdx := c.GetPvcIdx(pvcObj)
-	delete(c.Asow.PvcList, pvcIdx)
+	pvObj := obj.(*corev1.PersistentVolume)
+	pvName := GetPvName(pvObj)
+	delete(c.GetPvMap(), pvName)
 }
 
-func (c *KubeController) handlePvcUpdate(obj interface{}) {
+func (c *KubeController) handlePvUpdate(obj interface{}) {
 	var object metav1.Object
 	var ok bool
 	if object, ok = obj.(metav1.Object); !ok {
 		tombstone, ok := obj.(cache.DeletedFinalStateUnknown)
 		if !ok {
-			utilruntime.HandleError(fmt.Errorf("error decoding object, invalid type"))
+			utilruntime.HandleError(fmt.Errorf("Error decoding object, invalid type"))
 			return
 		}
 		object, ok = tombstone.Obj.(metav1.Object)
 		if !ok {
-			utilruntime.HandleError(fmt.Errorf("error decoding object tombstone, invalid type"))
+			utilruntime.HandleError(fmt.Errorf("Error decoding object tombstone, invalid type"))
 			return
 		}
 		log.Infof("Recovered deleted object '%s' from tombstone", object.GetName())
 	}
 
-	pvcObj := obj.(*corev1.PersistentVolumeClaim)
-	pvcIdx := c.GetPvcIdx(pvcObj)
-	c.Asow.PvcList[pvcIdx] = pvcObj
+	pvObj := obj.(*corev1.PersistentVolume)
+	pvName := GetPvName(pvObj)
+	c.SetPvMap(pvName, pvObj)
 }
 
-func (c *KubeController) GetPvcIdx(pvcObj *corev1.PersistentVolumeClaim) string {
-	pvcIdx := pvcObj.Namespace + "/" + pvcObj.Name
-	return pvcIdx
+func GetPvName(pvObj *corev1.PersistentVolume) string {
+	pvName := pvObj.Name
+	return pvName
 }

@@ -11,3 +11,7 @@ var Events = fsm.Events{
 	{Name: RunningEvent, Src: []string{Initialization}, Dst: Running},
 	{Name: TerminatingEvent, Src: []string{Pending, Creating, Initialization, Running}, Dst: Terminating},
 }
+
+func NewFSM(){
+
+}

@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Storage() crd.Interface
+	Kubernetes() crd.Interface
 }
 
-func (f *sharedInformerFactory) Storage() crd.Interface {
+func (f *sharedInformerFactory) Kubernetes() crd.Interface {
 	return crd.New(f, f.namespace, f.tweakListOptions)
 }

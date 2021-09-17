@@ -21,7 +21,7 @@ package versioned
 import (
 	"fmt"
 
-	storagev1beta1 "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned/typed/crd/v1beta1"
+	kubernetesv1beta1 "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned/typed/crd/v1beta1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -29,19 +29,19 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	StorageV1beta1() storagev1beta1.StorageV1beta1Interface
+	KubernetesV1beta1() kubernetesv1beta1.KubernetesV1beta1Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	storageV1beta1 *storagev1beta1.StorageV1beta1Client
+	kubernetesV1beta1 *kubernetesv1beta1.KubernetesV1beta1Client
 }
 
-// StorageV1beta1 retrieves the StorageV1beta1Client
-func (c *Clientset) StorageV1beta1() storagev1beta1.StorageV1beta1Interface {
-	return c.storageV1beta1
+// KubernetesV1beta1 retrieves the KubernetesV1beta1Client
+func (c *Clientset) KubernetesV1beta1() kubernetesv1beta1.KubernetesV1beta1Interface {
+	return c.kubernetesV1beta1
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -65,7 +65,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.storageV1beta1, err = storagev1beta1.NewForConfig(&configShallowCopy)
+	cs.kubernetesV1beta1, err = kubernetesv1beta1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.storageV1beta1 = storagev1beta1.NewForConfigOrDie(c)
+	cs.kubernetesV1beta1 = kubernetesv1beta1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -90,7 +90,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.storageV1beta1 = storagev1beta1.New(c)
+	cs.kubernetesV1beta1 = kubernetesv1beta1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

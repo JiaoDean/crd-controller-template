@@ -1,4 +1,4 @@
-package controller
+package kube
 
 import (
 	corev1 "k8s.io/api/core/v1"
@@ -27,24 +27,14 @@ type KubeController struct {
 	// Kubernetes API.
 	recorder record.EventRecorder
 
-	Asow *ActualStorageOfWorld
-}
-
-type ActualStorageOfWorld struct {
-	PvList  map[string]*corev1.PersistentVolume
-	PvcList map[string]*corev1.PersistentVolumeClaim
+	pvMap  map[string]*corev1.PersistentVolume
+	pvcMap map[string]*corev1.PersistentVolumeClaim
 }
 
 func NewKubeController(kubeClient kubernetes.Interface,
 	pvInformer coreinformers.PersistentVolumeInformer,
 	pvcInformer coreinformers.PersistentVolumeClaimInformer,
 	recorder record.EventRecorder) *KubeController {
-
-	asow := &ActualStorageOfWorld{}
-	pvList := map[string]*corev1.PersistentVolume{}
-	pvcList := map[string]*corev1.PersistentVolumeClaim{}
-	asow.PvList = pvList
-	asow.PvcList = pvcList
 
 	controller := &KubeController{
 		clientset: kubeClient,
@@ -53,7 +43,8 @@ func NewKubeController(kubeClient kubernetes.Interface,
 		pvLister:  pvInformer.Lister(),
 		pvSynced:  pvInformer.Informer().HasSynced,
 		recorder:  recorder,
-		Asow:      asow,
+		pvMap:     map[string]*corev1.PersistentVolume{},
+		pvcMap:    map[string]*corev1.PersistentVolumeClaim{},
 	}
 
 	pvInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
@@ -86,4 +77,20 @@ func NewKubeController(kubeClient kubernetes.Interface,
 		DeleteFunc: controller.handlePvcDelete,
 	})
 	return controller
+}
+
+func (k *KubeController) GetPvcMap() map[string]*corev1.PersistentVolumeClaim {
+	return k.pvcMap
+}
+
+func (k *KubeController) SetPvcMap(pvcName string, pvcObj *corev1.PersistentVolumeClaim) {
+	k.pvcMap[pvcName] = pvcObj
+}
+
+func (k *KubeController) GetPvMap() map[string]*corev1.PersistentVolume {
+	return k.pvMap
+}
+
+func (k *KubeController) SetPvMap(pvName string, pvObj *corev1.PersistentVolume) {
+	k.pvMap[pvName] = pvObj
 }

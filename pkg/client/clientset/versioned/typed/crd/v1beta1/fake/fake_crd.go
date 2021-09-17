@@ -32,12 +32,12 @@ import (
 
 // FakeCrds implements CrdInterface
 type FakeCrds struct {
-	Fake *FakeStorageV1beta1
+	Fake *FakeKubernetesV1beta1
 }
 
-var crdsResource = schema.GroupVersionResource{Group: "storage.alibabacloud.com", Version: "v1beta1", Resource: "crds"}
+var crdsResource = schema.GroupVersionResource{Group: "kubernetes.io", Version: "v1beta1", Resource: "crds"}
 
-var crdsKind = schema.GroupVersionKind{Group: "storage.alibabacloud.com", Version: "v1beta1", Kind: "Crd"}
+var crdsKind = schema.GroupVersionKind{Group: "kubernetes.io", Version: "v1beta1", Kind: "Crd"}
 
 // Get takes name of the crd, and returns the corresponding crd object, and an error if there is any.
 func (c *FakeCrds) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.Crd, err error) {

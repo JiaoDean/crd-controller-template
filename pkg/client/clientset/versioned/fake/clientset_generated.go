@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned"
-	storagev1beta1 "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned/typed/crd/v1beta1"
-	fakestoragev1beta1 "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned/typed/crd/v1beta1/fake"
+	kubernetesv1beta1 "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned/typed/crd/v1beta1"
+	fakekubernetesv1beta1 "github.com/JiaoDean/crd-controller/pkg/client/clientset/versioned/typed/crd/v1beta1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -76,7 +76,7 @@ func (c *Clientset) Tracker() testing.ObjectTracker {
 
 var _ clientset.Interface = &Clientset{}
 
-// StorageV1beta1 retrieves the StorageV1beta1Client
-func (c *Clientset) StorageV1beta1() storagev1beta1.StorageV1beta1Interface {
-	return &fakestoragev1beta1.FakeStorageV1beta1{Fake: &c.Fake}
+// KubernetesV1beta1 retrieves the KubernetesV1beta1Client
+func (c *Clientset) KubernetesV1beta1() kubernetesv1beta1.KubernetesV1beta1Interface {
+	return &fakekubernetesv1beta1.FakeKubernetesV1beta1{Fake: &c.Fake}
 }

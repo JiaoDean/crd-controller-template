@@ -2,7 +2,8 @@ package task
 
 import (
 	"fmt"
-	"github.com/JiaoDean/crd-controller/pkg/controller"
+	"github.com/JiaoDean/crd-controller/pkg/controller/crd"
+	"github.com/JiaoDean/crd-controller/pkg/controller/kube"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
@@ -12,7 +13,7 @@ import (
 var handlers = make(map[string]handler)
 var syncPeriod = make(map[string]time.Duration)
 
-type handler func(kubeController *controller.KubeController, crdController *controller.CrdController, kubeClient kubernetes.Interface) (Task, error)
+type handler func(kubeController *kube.KubeController, crdController *crd.CrdController, kubeClient kubernetes.Interface) (Task, error)
 
 func register(name string, handler handler, duration time.Duration) {
 	if handler == nil {
@@ -31,7 +32,7 @@ type Task interface {
 	doTask(key, value interface{}) bool
 }
 
-func Run(csiController *controller.KubeController, crdController *controller.CrdController, kubeClient kubernetes.Interface, stopCh <-chan struct{}) {
+func Run(csiController *kube.KubeController, crdController *crd.CrdController, kubeClient kubernetes.Interface, stopCh <-chan struct{}) {
 	for name, jobHandler := range handlers {
 		job, err := jobHandler(csiController, crdController, kubeClient)
 		if err != nil {

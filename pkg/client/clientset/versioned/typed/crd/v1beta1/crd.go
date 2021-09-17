@@ -56,7 +56,7 @@ type crds struct {
 }
 
 // newCrds returns a Crds
-func newCrds(c *StorageV1beta1Client) *crds {
+func newCrds(c *KubernetesV1beta1Client) *crds {
 	return &crds{
 		client: c.RESTClient(),
 	}

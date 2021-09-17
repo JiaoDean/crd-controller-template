@@ -61,13 +61,13 @@ func NewFilteredCrdInformer(client versioned.Interface, resyncPeriod time.Durati
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StorageV1beta1().Crds().List(context.TODO(), options)
+				return client.KubernetesV1beta1().Crds().List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StorageV1beta1().Crds().Watch(context.TODO(), options)
+				return client.KubernetesV1beta1().Crds().Watch(context.TODO(), options)
 			},
 		},
 		&crdv1beta1.Crd{},

@@ -52,9 +52,9 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=storage.alibabacloud.com, Version=v1beta1
+	// Group=kubernetes.io, Version=v1beta1
 	case v1beta1.SchemeGroupVersion.WithResource("crds"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Storage().V1beta1().Crds().Informer()}, nil
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Kubernetes().V1beta1().Crds().Informer()}, nil
 
 	}
 
