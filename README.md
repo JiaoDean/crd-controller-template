@@ -1,2 +1,2 @@
-# crd-controller
-Out-of-the-box control crd controller
+# crd-controller-template
+Out-of-the-box control crd controller template
